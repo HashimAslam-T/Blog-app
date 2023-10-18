@@ -40,13 +40,35 @@ const search = async (req,res)=>
 {
 try
 {
- const{title} = req.body;
+ const{title,tags} = req.body;
  const titlePosts = await Post.findAll({
     where:{title:title}
  });
-//  console.log(titlePosts);
 
- res.status(200).send(titlePosts)
+if (tags.length!==0)
+{
+     const findId = await Tag.findAll({
+      where:{tagName:tags},
+      attributes:['id']
+     });
+     const tagIds = findId.map(tag => tag.dataValues.id);
+   console.log(tagIds);
+   
+     const findPostId = await BlogPostTag.findAll({
+      where:{TagId:tagIds},
+      attributes:['BlogPostId']
+     });
+   //   console.log(findPostId);
+     const postId = findPostId.map(post=>post.dataValues.BlogPostId);
+     console.log(postId);
+
+     const findPost = await Post.findAll({where:{id:postId}});
+     const result = [titlePosts,findPost]
+      res.status(200).send(result);
+
+   }
+else{res.status(200).send(titlePosts)}
+ 
 }
 catch(err)
 {
