@@ -51,7 +51,7 @@ try
 catch(err)
 {
     console.log(err)
-    res.status(500).send('Could not get tags');
+    res.status(500).send('Could not get titles');
 }
 }
 
